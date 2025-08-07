@@ -1,0 +1,152 @@
+name: Deploy
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+env:
+  TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
+  TURBO_TEAM: ${{ vars.TURBO_TEAM }}
+
+jobs:
+  deploy-contracts:
+    name: Deploy Contracts
+    runs-on: ubuntu-latest
+    if: contains(github.event.head_commit.message, '[deploy-contracts]') || github.event_name == 'workflow_dispatch'
+    environment: production
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 8
+          run_install: false
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Compile contracts
+        run: pnpm --filter @jojo/contracts compile
+
+      - name: Deploy to testnet
+        if: github.ref != 'refs/heads/main'
+        env:
+          PRIVATE_KEY: ${{ secrets.TESTNET_PRIVATE_KEY }}
+          ARBITRUM_SEPOLIA_RPC_URL: ${{ secrets.ARBITRUM_SEPOLIA_RPC_URL }}
+          ARBISCAN_API_KEY: ${{ secrets.ARBISCAN_API_KEY }}
+        run: pnpm --filter @jojo/contracts deploy:testnet
+
+      - name: Deploy to mainnet
+        if: github.ref == 'refs/heads/main'
+        env:
+          PRIVATE_KEY: ${{ secrets.MAINNET_PRIVATE_KEY }}
+          ARBITRUM_RPC_URL: ${{ secrets.ARBITRUM_RPC_URL }}
+          ARBISCAN_API_KEY: ${{ secrets.ARBISCAN_API_KEY }}
+        run: pnpm --filter @jojo/contracts deploy:mainnet
+
+      - name: Verify contracts
+        env:
+          ARBISCAN_API_KEY: ${{ secrets.ARBISCAN_API_KEY }}
+        run: |
+          if [[ "${{ github.ref }}" == "refs/heads/main" ]]; then
+            pnpm --filter @jojo/contracts verify:mainnet
+          else
+            pnpm --filter @jojo/contracts verify:testnet
+          fi
+
+  deploy-frontend:
+    name: Deploy Frontend
+    runs-on: ubuntu-latest
+    needs: [deploy-contracts]
+    if: always() && (needs.deploy-contracts.result == 'success' || needs.deploy-contracts.result == 'skipped')
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 8
+          run_install: false
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build frontend
+        env:
+          NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID: ${{ secrets.WALLETCONNECT_PROJECT_ID }}
+          NEXT_PUBLIC_ALCHEMY_API_KEY: ${{ secrets.ALCHEMY_API_KEY }}
+        run: pnpm --filter @jojo/web build
+
+      - name: Deploy to Vercel
+        uses: amondnet/vercel-action@v25
+        with:
+          vercel-token: ${{ secrets.VERCEL_TOKEN }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          vercel-org-id: ${{ secrets.ORG_ID }}
+          vercel-project-id: ${{ secrets.PROJECT_ID }}
+          working-directory: packages/web
+          production: ${{ github.ref == 'refs/heads/main' }}
+
+  deploy-subgraph:
+    name: Deploy Subgraph
+    runs-on: ubuntu-latest
+    needs: [deploy-contracts]
+    if: needs.deploy-contracts.result == 'success'
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 8
+          run_install: false
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Prepare subgraph config
+        run: |
+          if [[ "${{ github.ref }}" == "refs/heads/main" ]]; then
+            pnpm --filter @jojo/subgraph prepare:arbitrum
+          else
+            pnpm --filter @jojo/subgraph prepare:arbitrum-sepolia
+          fi
+
+      - name: Generate subgraph code
+        run: pnpm --filter @jojo/subgraph codegen
+
+      - name: Build subgraph
+        run: pnpm --filter @jojo/subgraph build
+
+      - name: Deploy subgraph
+        env:
+          GRAPH_DEPLOY_KEY: ${{ secrets.GRAPH_DEPLOY_KEY }}
+        run: |
+          if [[ "${{ github.ref }}" == "refs/heads/main" ]]; then
+            pnpm --filter @jojo/subgraph deploy:arbitrum
+          else
+            pnpm --filter @jojo/subgraph deploy:arbitrum-sepolia
+          fi

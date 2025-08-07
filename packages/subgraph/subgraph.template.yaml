@@ -1,0 +1,99 @@
+specVersion: 0.0.5
+schema:
+  file: ./schemas/schema.graphql
+dataSources:
+  - kind: ethereum
+    name: JOJOToken
+    network: {{network}}
+    source:
+      address: "{{jojoTokenAddress}}"
+      abi: JOJOToken
+      startBlock: {{startBlock}}
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      entities:
+        - User
+        - Token
+        - Transfer
+        - Approval
+        - Stake
+        - Unstake
+        - Reward
+      abis:
+        - name: JOJOToken
+          file: ./abis/JOJOToken.json
+        - name: Staking
+          file: ./abis/Staking.json
+        - name: Governance
+          file: ./abis/Governance.json
+      eventHandlers:
+        - event: Transfer(indexed address,indexed address,uint256)
+          handler: handleTransfer
+        - event: Approval(indexed address,indexed address,uint256)
+          handler: handleApproval
+      file: ./src/jojo-token.ts
+  - kind: ethereum
+    name: Staking
+    network: {{network}}
+    source:
+      address: "{{stakingAddress}}"
+      abi: Staking
+      startBlock: {{startBlock}}
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      entities:
+        - User
+        - Stake
+        - Unstake
+        - Reward
+        - StakeEvent
+      abis:
+        - name: Staking
+          file: ./abis/Staking.json
+        - name: JOJOToken
+          file: ./abis/JOJOToken.json
+      eventHandlers:
+        - event: Staked(indexed address,uint256,uint256)
+          handler: handleStaked
+        - event: Unstaked(indexed address,uint256,uint256)
+          handler: handleUnstaked
+        - event: RewardClaimed(indexed address,uint256)
+          handler: handleRewardClaimed
+      file: ./src/staking.ts
+  - kind: ethereum
+    name: Governance
+    network: {{network}}
+    source:
+      address: "{{governanceAddress}}"
+      abi: Governance
+      startBlock: {{startBlock}}
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      entities:
+        - Proposal
+        - Vote
+        - User
+        - ProposalCreated
+        - VoteCast
+        - ProposalExecuted
+      abis:
+        - name: Governance
+          file: ./abis/Governance.json
+        - name: JOJOToken
+          file: ./abis/JOJOToken.json
+      eventHandlers:
+        - event: ProposalCreated(uint256,address,address[],uint256[],string[],bytes[],uint256,uint256,string)
+          handler: handleProposalCreated
+        - event: VoteCast(indexed address,uint256,uint8,uint256,string)
+          handler: handleVoteCast
+        - event: ProposalExecuted(uint256)
+          handler: handleProposalExecuted
+        - event: ProposalCanceled(uint256)
+          handler: handleProposalCanceled
+      file: ./src/governance.ts

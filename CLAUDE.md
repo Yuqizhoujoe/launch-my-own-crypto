@@ -4,13 +4,31 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-This is the **JOJO Token** project - a community-driven cryptocurrency being developed for the Arbitrum ecosystem. The project is currently in the documentation and planning phase, with plans to implement smart contracts for an ERC-20 token with staking, governance, and treasury functionality.
+This is the **JOJO Token** project - a community-driven cryptocurrency being developed for the Arbitrum ecosystem. The project is now structured as a **Turborepo monorepo** with full development infrastructure for smart contracts, frontend, backend, and indexing services.
 
 ## Project Structure
 
+### Monorepo Architecture
+
+This is a Turborepo monorepo with the following packages:
+
+```
+jojo-token/
+├── packages/
+│   ├── contracts/      # Smart contracts (Hardhat + Solidity)
+│   ├── web/           # Next.js 14+ frontend with Wagmi/Viem
+│   ├── api/           # Node.js + Express backend API
+│   ├── shared/        # Shared TypeScript types & utilities
+│   └── subgraph/      # The Graph Protocol subgraph
+├── docs/              # Documentation
+├── tools/             # Development tools and scripts
+└── apps/              # Additional applications (future)
+```
+
 ### Documentation Files
 
-- `whitepaper.md` - Complete technical and economic specification of JOJO Token
+- `README.md` - Main project documentation and setup guide
+- `whitepaper.md` - Complete technical and economic specification
 - `tokenomics.md` - Detailed token economics and distribution model
 - `crypto-plan.md` - Phase-by-phase development roadmap
 - `governance-research.md` - Governance mechanism research
@@ -18,7 +36,7 @@ This is the **JOJO Token** project - a community-driven cryptocurrency being dev
 
 ### Development Status
 
-- **Current Phase**: Documentation and planning (Phase 1)
+- **Current Phase**: Phase 1 completed - Foundation and monorepo setup ✅
 - **Next Phase**: Smart contract development (Phase 2)
 - **Target Platform**: Arbitrum One (Layer 2)
 - **Token Standard**: ERC-20
@@ -51,36 +69,88 @@ The project will implement these core contracts:
 
 ## Development Commands
 
-### Current Commands (Basic Node.js setup)
+### Global Commands (run from root)
 
 ```bash
-# Install dependencies (minimal setup currently)
-npm install
+# Install all dependencies
+pnpm install
 
-# Test command (placeholder - will fail until tests implemented)
-npm test
+# Development mode (all packages)
+pnpm dev
+
+# Build all packages
+pnpm build
+
+# Run all tests
+pnpm test
+
+# Type check all packages
+pnpm type-check
+
+# Lint all packages
+pnpm lint
+
+# Format all code
+pnpm format
+
+# Clean all build artifacts
+pnpm clean
 ```
 
-### Planned Commands (Future Implementation)
+### Package-Specific Commands
 
+#### Smart Contracts (`packages/contracts`)
 ```bash
-# Compile smart contracts
-npm run compile
+# Compile contracts
+cd packages/contracts && pnpm compile
 
-# Run unit tests
-npm run test
+# Run contract tests
+cd packages/contracts && pnpm test
 
-# Deploy to testnet
-npm run deploy:testnet
+# Deploy to Arbitrum Sepolia (testnet)
+cd packages/contracts && pnpm deploy:testnet
 
-# Deploy to mainnet
-npm run deploy:mainnet
+# Deploy to Arbitrum One (mainnet)
+cd packages/contracts && pnpm deploy:mainnet
 
-# Verify contracts
-npm run verify
+# Verify contracts on Arbiscan
+cd packages/contracts && pnpm verify:mainnet
+```
 
-# Run security analysis
-npm run audit
+#### Frontend (`packages/web`)
+```bash
+# Start development server
+cd packages/web && pnpm dev
+
+# Build for production
+cd packages/web && pnpm build
+
+# Start production server
+cd packages/web && pnpm start
+```
+
+#### Backend API (`packages/api`)
+```bash
+# Start development server with hot reload
+cd packages/api && pnpm dev
+
+# Build for production
+cd packages/api && pnpm build
+
+# Start production server
+cd packages/api && pnpm start
+```
+
+#### Subgraph (`packages/subgraph`)
+```bash
+# Generate types from GraphQL schema
+cd packages/subgraph && pnpm codegen
+
+# Build subgraph
+cd packages/subgraph && pnpm build
+
+# Deploy to The Graph Studio
+cd packages/subgraph && pnpm deploy:arbitrum
 ```
 
 ## Development Guidelines
@@ -109,12 +179,16 @@ npm run audit
 
 ## Project Phases
 
-### Phase 1: Documentation (Current - Weeks 1-2)
+### Phase 1: Foundation (Completed ✅)
 
 - ✅ Whitepaper completion
-- ✅ Tokenomics design
+- ✅ Tokenomics design  
 - ✅ Governance model design
 - ✅ Legal compliance research
+- ✅ Monorepo architecture setup
+- ✅ Development tooling and CI/CD
+- ✅ TypeScript configuration across packages
+- ✅ Package structure and dependencies
 
 ### Phase 2: Development (Weeks 3-6)
 

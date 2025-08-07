@@ -1,0 +1,33 @@
+{
+  "name": "@jojo/subgraph",
+  "version": "0.1.0",
+  "description": "The Graph subgraph for JOJO Token - Indexes on-chain data for governance, staking, and token events",
+  "private": true,
+  "scripts": {
+    "build": "graph build",
+    "codegen": "graph codegen",
+    "deploy:arbitrum": "graph deploy --studio jojo-token-arbitrum",
+    "deploy:arbitrum-sepolia": "graph deploy --studio jojo-token-arbitrum-sepolia",
+    "create:local": "graph create --node http://localhost:8020/ jojo-token",
+    "remove:local": "graph remove --node http://localhost:8020/ jojo-token",
+    "deploy:local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 jojo-token",
+    "test": "graph test",
+    "clean": "rm -rf build generated",
+    "prepare:arbitrum": "mustache config/arbitrum.json subgraph.template.yaml > subgraph.yaml",
+    "prepare:arbitrum-sepolia": "mustache config/arbitrum-sepolia.json subgraph.template.yaml > subgraph.yaml",
+    "lint": "eslint . --ext .ts",
+    "format": "prettier --write \"**/*.{ts,yaml,json,md}\""
+  },
+  "dependencies": {
+    "@graphprotocol/graph-cli": "^0.69.0",
+    "@graphprotocol/graph-ts": "^0.32.0"
+  },
+  "devDependencies": {
+    "@types/mustache": "^4.2.5",
+    "eslint": "^8.57.0",
+    "matchstick-as": "^0.5.2",
+    "mustache": "^4.2.0",
+    "prettier": "^3.2.5",
+    "typescript": "^5.3.3"
+  }
+}

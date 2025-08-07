@@ -1,0 +1,47 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
+    "allowJs": true,
+    "skipLibCheck": true,
+    "strict": true,
+    "noEmit": true,
+    "esModuleInterop": true,
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "jsx": "preserve",
+    "incremental": true,
+    "declaration": true,
+    "declarationMap": true,
+    "sourceMap": true,
+    "composite": true,
+    "baseUrl": ".",
+    "paths": {
+      "@jojo/shared/*": ["./packages/shared/src/*"],
+      "@jojo/contracts/*": ["./packages/contracts/*"],
+      "@jojo/types": ["./packages/shared/src/types"],
+      "@jojo/utils": ["./packages/shared/src/utils"]
+    }
+  },
+  "include": [],
+  "exclude": ["node_modules", "dist", "build", ".next"],
+  "references": [
+    {
+      "path": "./packages/shared"
+    },
+    {
+      "path": "./packages/contracts"
+    },
+    {
+      "path": "./packages/web"
+    },
+    {
+      "path": "./packages/api"
+    },
+    {
+      "path": "./packages/subgraph"
+    }
+  ]
+}
