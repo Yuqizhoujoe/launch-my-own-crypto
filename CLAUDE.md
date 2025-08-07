@@ -9,13 +9,15 @@ This is the **JOJO Token** project - a community-driven cryptocurrency being dev
 ## Project Structure
 
 ### Documentation Files
+
 - `whitepaper.md` - Complete technical and economic specification of JOJO Token
-- `tokenomics.md` - Detailed token economics and distribution model  
-- `crypto_launch_plan.md` - Phase-by-phase development roadmap
+- `tokenomics.md` - Detailed token economics and distribution model
+- `crypto-plan.md` - Phase-by-phase development roadmap
 - `governance-research.md` - Governance mechanism research
 - `dao-governance-knowledge-base.md` - DAO implementation guidelines
 
 ### Development Status
+
 - **Current Phase**: Documentation and planning (Phase 1)
 - **Next Phase**: Smart contract development (Phase 2)
 - **Target Platform**: Arbitrum One (Layer 2)
@@ -24,13 +26,16 @@ This is the **JOJO Token** project - a community-driven cryptocurrency being dev
 ## Technical Architecture (Planned)
 
 ### Smart Contract Stack
+
 The project will implement these core contracts:
+
 - **JOJO Token Contract**: Custom ERC-20 with inflation mechanics
-- **Staking Contract**: Delegated proof-of-stake style rewards  
+- **Staking Contract**: Delegated proof-of-stake style rewards
 - **Governance Contract**: Token-weighted voting system
 - **Treasury Contract**: Community-controlled fund management
 
 ### Development Stack
+
 - **Language**: Solidity
 - **Framework**: Hardhat or Foundry (to be determined)
 - **Network**: Arbitrum One
@@ -47,6 +52,7 @@ The project will implement these core contracts:
 ## Development Commands
 
 ### Current Commands (Basic Node.js setup)
+
 ```bash
 # Install dependencies (minimal setup currently)
 npm install
@@ -56,6 +62,7 @@ npm test
 ```
 
 ### Planned Commands (Future Implementation)
+
 ```bash
 # Compile smart contracts
 npm run compile
@@ -66,7 +73,7 @@ npm run test
 # Deploy to testnet
 npm run deploy:testnet
 
-# Deploy to mainnet  
+# Deploy to mainnet
 npm run deploy:mainnet
 
 # Verify contracts
@@ -79,6 +86,7 @@ npm run audit
 ## Development Guidelines
 
 ### Smart Contract Development
+
 - Use OpenZeppelin libraries for security
 - Implement comprehensive testing before deployment
 - Follow Arbitrum-specific deployment patterns
@@ -86,12 +94,14 @@ npm run audit
 - Implement multi-signature controls for critical functions
 
 ### Security Requirements
+
 - All contracts must be audited before mainnet deployment
 - Use time-locked governance for major changes
 - Implement formal verification where possible
 - Include emergency pause mechanisms
 
 ### Governance Implementation
+
 - Token-weighted voting (1 JOJO = 1 Vote)
 - Minimum quorum requirements (5-15% depending on proposal type)
 - Time delays for execution (2-day minimum for major changes)
@@ -100,18 +110,21 @@ npm run audit
 ## Project Phases
 
 ### Phase 1: Documentation (Current - Weeks 1-2)
+
 - ✅ Whitepaper completion
 - ✅ Tokenomics design
 - ✅ Governance model design
 - ✅ Legal compliance research
 
 ### Phase 2: Development (Weeks 3-6)
+
 - Smart contract implementation
 - Comprehensive testing suite
 - Security audits
 - Testnet deployment
 
 ### Phase 3: Launch (Weeks 7-10)
+
 - Mainnet deployment
 - Initial distribution (airdrops, staking)
 - DEX liquidity creation
@@ -120,23 +133,26 @@ npm run audit
 ## Distribution Strategy
 
 ### Fair Launch Principles
+
 - **0%** team allocation
 - **0%** VC allocation
 - **100%** community distribution through:
   - 50% early users & stakers
-  - 25% liquidity incentives  
+  - 25% liquidity incentives
   - 15% treasury/DAO
   - 10% ecosystem grants
 
 ## Important Notes
 
 ### Regulatory Considerations
+
 - Token designed as utility, not security
 - Community ownership from genesis
 - Decentralized governance structure
 - Ongoing legal compliance monitoring
 
 ### Risk Management
+
 - Controlled inflation with governance oversight
 - Multiple security audits planned
 - Emergency mechanisms in contracts
